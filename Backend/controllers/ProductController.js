@@ -3,8 +3,8 @@ const logger = require("../logs/ProductLogger");
 const {addProduct, _getAllProducts, _getProductById,_deleteById,_updateById, _addProductPhoto} =
  require("../services/ProductService")
  const {updateProductImage} = require("../scripts/utils/FileHelper")
-
-
+const insertProduct = require("../scripts/utils/elasticsearch/elasticDocument")
+const searchInElastic = require("../scripts/utils/elasticsearch/elasticSearch")
 
 const add = async (req,res) => {
 
@@ -15,6 +15,8 @@ const add = async (req,res) => {
     const fileName = await updateProductImage(req,res)
     const result = await addProduct(req,res,fileName);
     res.status(201).send("result")    
+
+    insertProduct("Product",req.data.product.id,"products", req.data.product.name)
    
 }
 
@@ -62,6 +64,13 @@ const uploadPhoto = async (req,res) => {
     res.status(200).send("ekleme işlemi başarılı")
 }
 
+    // ELASTICSEARCH SEARCH
+const getProductBySearchInput = async(req,res) => {
+   const resultOfSearch =  searchInElastic("products","product",req.body.data.searchInput)
+      const resultData = this.getProductById(resultOfSearch.id)            
+        res.status(200).send(resultData)      
+}
+
 module.exports = {
     add,
     getAllProducts,
@@ -69,4 +78,5 @@ module.exports = {
     deleteById,
     updateById,
     uploadPhoto,
+    getProductBySearchInput
 }

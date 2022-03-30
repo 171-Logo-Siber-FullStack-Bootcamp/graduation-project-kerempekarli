@@ -7,7 +7,8 @@ const {
     getProductById,
     deleteById,
     updateById,
-    uploadPhoto
+    uploadPhoto,
+    getProductBySearchInput
 } = require("../controllers/ProductController")
 const authenticateToken = require("../middlewares/authanticate")
 
@@ -20,10 +21,11 @@ const router = express.Router()
 // AUTHENTİCATİONLARI EKLEYECEĞİM. FRONTEND TARAFINI DENEMEK İÇİN GEÇİCİ OLARAK KALDIRDIM.
 
 router.route("/getall").get(getAllProducts)
-router.route("/add").post(add)
-router.get("/:id", getProductById) // authenticateToken eklenecek 
+router.route("/add").post(add)          // AuthenticateToken eklenecek 
+router.get("/:id", getProductById)     // AuthenticateToken eklenecek 
 router.delete("/:id",authenticateToken, deleteById)
 router.route("/:id").put(authenticateToken, validate(validations.addValidation), updateById)
-router.route("/:id/uploadphoto").post(uploadPhoto)
+router.route("/:id/uploadphoto").post(uploadPhoto)  // AuthenticateToken eklenecek 
+router.route("/search",getProductBySearchInput)     // ELASTICSEARCH 
 
 module.exports = router

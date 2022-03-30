@@ -22,8 +22,11 @@ elasticClient.ping({
                 }
             }
         }
+
+
         //Create products map
         const resmap = await elasticMap('ecommerce','products',mapping)
+
 
     }
     catch(err){
