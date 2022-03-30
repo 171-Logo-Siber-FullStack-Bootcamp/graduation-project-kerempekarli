@@ -31,8 +31,7 @@ Register requesti için yönlendirme şu şekilde App.js => UserRouter.js => Use
 
 ##### Backend Tarafında Token oluşturma - Yetkilendirme 
 
-Kullanıcı Login olduğunda response göndermeden önce data objesi oluşturarak user bilgilerini ve tokens arrayinin altında resfresh token ve 
-access token bilgilerini ekledim.
+Kullanıcı Login olduğunda response göndermeden önce data objesi oluşturarak user bilgilerini data objesinin içine ekledim ve tokens arrayi oluşturarak arrayin içine resfresh token ve access token bilgilerini ekledim.
 
 ![image](https://user-images.githubusercontent.com/83536108/160758064-9f52ca09-4936-480e-a393-6e9a9f5e90ad.png)
 
@@ -43,18 +42,45 @@ access token bilgilerini ekledim.
 
 ##### Parola sıfırlama için E-mail gönderme işleminin uygulaması
  
-  Henüz geliştirme aşamasında olduğum için Kullanıcının emailine şifre sıfırlama linki yollamak yerine direk random oluşturduğum şifreyi yolluyorum. En kısa süre içerisinde sıfırlama linkini çalıştıracağım.
+  Henüz geliştirme aşamasında olduğum için Kullanıcının emailine şifre sıfırlama linki yollamak yerine direk random oluşturduğum şifreyi yolluyorum. 
   
  Nodemailer kullanarak Email gönderme işlemi ve event emitter;
     ![image](https://user-images.githubusercontent.com/83536108/160759843-f9f5e09d-170e-4f7e-af75-cb0ba3ecdde6.png)
 
   ![image](https://user-images.githubusercontent.com/83536108/160759740-b3c5ba20-fa9b-465c-a837-ef09decc09ab.png)
 
+  #### Validation middleware 
   
+  Joi kütüphanesini kullanarak gelen request içindeki keylere sınırlamalar getiriyoruz. Bu sayede Database'e veri eklerken kontrol edebiliyoruz ve uygun olmayan verilerin önüne geçiyoruz.
+  
+  Örnek olarak ürünü database'e eklemeden önce ürünün değerlerini kontol etmek için Joi kütüphanesini kullanarak bir obje oluşturdum ve addValidation değişkenine atadım. 
+   
+   ![image](https://user-images.githubusercontent.com/83536108/160768276-2b293d30-d86d-4f1b-9e53-a40650abbb27.png)
+
+                                                
+  ![image](https://user-images.githubusercontent.com/83536108/160768320-59206a2c-5961-4801-af88-eb7955f6398c.png)
 
 
-
- 
+  Validate middlewaresi kullanarak controller'da ürün ekleme metodunun öncesinde çalıştırarak gerekli kontrolleri yaptım. Uygun değilse 400 bad request cevabını döndürdüm, Eğer uygunsa next() diyerek middlewarenin devam etmesini onayladım ve Object.assign metodu ile req ve value değerini birleştirip son devreye girecek olan fonksiyona gönderdim. 
+  
+  
+  ##### Fotoğraf ekleme ve frontend'te gösterme
+    
+    if bloğu içinde requestin içinde resim olup olmadıgını kontrol ettim eğer yoksa bad request döndürdüm.
+    
+    Eğer resim varsa path.extname metodu kullanarak dosya uzantısını aldım.
+    
+    dosya isimlerinin çakışmasını önlemek için resmin isminin unique olması gerekli bu yüzden date.now komutunu kullanarak resmin ismini manüpüle ettim.
+    
+    dosyayı yüklemek istediğim dosya yolunu path1 değişkenine atadım.
+    
+    path.join metodu kullanarak dosya yoluna resmimizin ismini ve uzantısını ekledim ve bir değişkene atadım. ( Kullanımın kolay olması için frontend asset klasörüne yükledim )
+    
+    devamında express.upload middlewaresinden gelene mv() komutunu kullanarak dosyayı istediğimiz dosya yoluna gönderdim. ve bütün bu metodun sonucu olarak
+    
+    resmin ismini geriye gönderdüm bu sayede dosya ismini databaseye ekleyebileceği.
+    
+![image](https://user-images.githubusercontent.com/83536108/160769373-61cf1b03-751a-4e90-a3d8-a257fbeccdfe.png)
 
 
 
